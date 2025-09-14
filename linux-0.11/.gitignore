@@ -1,0 +1,49 @@
+# 忽略所有目标文件
+*.o
+
+# 忽略可执行文件
+boot/bootsect
+boot/setup
+tools/system
+tools/build
+
+# 忽略内核镜像和系统映射文件
+Image
+System.map
+
+# 忽略临时文件
+system.tmp
+tools/kernel
+
+# 忽略库文件
+lib/lib.a
+kernel/blk_drv/blk_drv.a
+kernel/chr_drv/chr_drv.a
+kernel/math/math.a
+
+# 忽略tags文件
+tags
+
+# 忽略压缩文件
+*.gz
+
+# 忽略调试相关文件
+*.dSYM
+
+# 忽略编辑器备份文件
+*~
+*.swp
+*.swo
+
+# 忽略IDE配置文件
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 忽略其他文件
+../bochsout.txt
+kernel/chr_drv/keyboard.s
