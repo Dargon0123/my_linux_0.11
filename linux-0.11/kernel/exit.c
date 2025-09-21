@@ -127,6 +127,11 @@ int do_exit(long code)
 	if (current->leader)
 		kill_session();
 	current->state = TASK_ZOMBIE;
+    #if SHOW_SRC_FUNC_ENABLE
+    fprintk(3, "%ld\t%c\t%ld\t%s\n", current->pid, 'E', jiffies, __func__);
+    #else
+    fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'E', jiffies);
+    #endif
 	current->exit_code = code;
 	tell_father(current->father);
 	schedule();
@@ -184,6 +189,11 @@ repeat:
 		if (options & WNOHANG)
 			return 0;
 		current->state=TASK_INTERRUPTIBLE;
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", current->pid, 'W', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'W', jiffies);
+        #endif
 		schedule();
 		if (!(current->signal &= ~(1<<(SIGCHLD-1))))
 			goto repeat;

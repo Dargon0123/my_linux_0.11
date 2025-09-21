@@ -1,2 +1,10 @@
 hdc-0.11.img
 bochsout.txt
+# 忽略IDE配置文件
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -16,6 +16,8 @@
 #error "Currently the close-on-exec-flags are in one word, max 32 files/proc"
 #endif
 
+#define SHOW_SRC_FUNC_ENABLE 1
+
 #define TASK_RUNNING		0
 #define TASK_INTERRUPTIBLE	1
 #define TASK_UNINTERRUPTIBLE	2

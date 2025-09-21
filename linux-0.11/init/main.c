@@ -135,8 +135,17 @@ void main(void)		/* This really IS void, no error here. */
 	floppy_init();
 	sti();
 	move_to_user_mode();
+    /* move these statements from init() to here in 3-processTrack */
+ 	setup((void *) &drive_info);
+ 	(void) open("/dev/tty0",O_RDWR,0);
+ 	(void) dup(0);
+ 	(void) dup(0);
+ 	/* create write-only process.log in var and associate with file descriptor 3 */
+ 	(void) open("/var/process.log", O_CREAT|O_TRUNC|O_RDWR, 0666);
+	/* move and add in 3-processTrack end */
+
 	if (!fork()) {		/* we count on this going ok */
-		init();
+		init(); // P1开始
 	}
 /*
  *   NOTE!!   For any other task 'pause()' would mean we have to get a
@@ -145,7 +154,7 @@ void main(void)		/* This really IS void, no error here. */
  * can run). For task0 'pause()' just means we go check if some other
  * task can run, and if not we return here.
  */
-	for(;;) pause();
+	for(;;) pause(); // P0继续
 }
 
 static int printf(const char *fmt, ...)
@@ -169,21 +178,21 @@ void init(void)
 {
 	int pid,i;
 
-	setup((void *) &drive_info);
-	(void) open("/dev/tty0",O_RDWR,0);
-	(void) dup(0);
-	(void) dup(0);
+	// setup((void *) &drive_info);
+	// (void) open("/dev/tty0",O_RDWR,0);
+	// (void) dup(0);
+	// (void) dup(0);
 	printf("%d buffers = %d bytes buffer space\n\r",NR_BUFFERS,
 		NR_BUFFERS*BLOCK_SIZE);
 	printf("Free mem: %d bytes\n\r",memory_end-main_memory_start);
-	if (!(pid=fork())) {
+	if (!(pid=fork())) { // P2开始
 		close(0);
 		if (open("/etc/rc",O_RDONLY,0))
 			_exit(1);
 		execve("/bin/sh",argv_rc,envp_rc);
 		_exit(2);
 	}
-	if (pid>0)
+	if (pid>0) // P1继续
 		while (pid != wait(&i))
 			/* nothing */;
 	while (1) {

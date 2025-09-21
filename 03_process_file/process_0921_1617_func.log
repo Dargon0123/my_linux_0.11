@@ -1,0 +1,113 @@
+1	N	48	copy_process    // P0 fork()出P1，进程0是内核进程，不是fork出来，是系统内核初始化创建的第一个进程，跳到main函数就开始执行的，负责给系统做一系列的初始化工作，并且创建进程1(init进程)，而进程1，随后会创建其它用户进程。统一使用P_x-->进程_x
+1	J	48	copy_process    // 同一个10ms内，进入就绪队列
+0	J	48	schedule        // P0通过sys_pause进入就绪队列，让出CPU
+1	R	48	schedule        // P1开始正式运行，通过schedule被调度到
+2	N	49	copy_process    // P1 fork()出P2
+2	J	49	copy_process    // P2 添加对应ready_list
+1	W	49	sys_waitpid     // P1在init里面调用wait，进入wait状态
+2	R	49	schedule        // 在P1调用wait之后，通过schedule切换到P2 运行,此时P1是wait状态
+3	N	63	copy_process    // P2 通过execve() 建立P3，并加入ready_list里面
+3	J	64	copy_process
+2	J	64	schedule        // P2 让出CPU，
+3	R	64	schedule        // P3 开始运行
+3	W	68	sys_pause       // P3 主动调用sys_pause，开始wait？
+2	R	68	schedule        // P2 拿到cpu 运行
+2	E	74	do_exit         // P2 执行_exit(2);退出
+1	J	74	schedule_signal // P1 由于之前waitP2，等待结束，重新就绪
+1	R	74	schedule        // P1 开始运行
+4	N	74	copy_process    // P1 fork出 P4 shell进程
+4	J	74	copy_process    
+1	W	74	sys_waitpid     // P1 调用if (pid == wait(&i))进入wait，等待P4
+4	R	74	schedule        // P1切到P4, P4 拿到cpu，运行
+5	N	106	copy_process    // P4 fork P5
+5	J	107	copy_process
+4	W	107	sleep_on
+5	R	107	schedule
+4	J	109	wake_up
+5	E	110	do_exit         // P5 退出
+4	R	110	schedule        // 切到P4
+4	W	115	interruptible_sleep_on // P4 shell进程,等待输入指令
+0	R	115	schedule        // P4 切换到P0，P0此时执行 sys_pause进入所谓的idle状态
+4	J	467	wake_up         // P4 被唤醒,进入就绪态，因为有shell窗口有输入
+4	R	467	schedule        // P4 拿到cpu，运行
+6	N	467	copy_process    // P4 shell进程fork出P6
+6	J	468	copy_process
+4	W	468	sleep_on
+6	R	468	schedule
+4	J	470	wake_up
+6	E	471	do_exit         // P6 处理完成，退出
+4	R	471	schedule        // 切回到P4，shell
+4	W	471	interruptible_sleep_on // 重复睡眠，等待参数输入，然后唤醒P4，执行
+0	R	471	schedule        // 切到P0
+4	J	483	wake_up
+4	R	483	schedule
+4	W	483	interruptible_sleep_on
+0	R	483	schedule
+4	J	514	wake_up
+4	R	514	schedule
+7	N	514	copy_process
+7	J	514	copy_process
+4	W	515	sleep_on
+7	R	515	schedule
+4	J	517	wake_up
+7	E	518	do_exit
+4	R	518	schedule
+4	W	518	interruptible_sleep_on
+0	R	518	schedule
+4	J	536	wake_up
+4	R	536	schedule
+4	W	536	interruptible_sleep_on
+0	R	536	schedule
+4	J	565	wake_up
+4	R	565	schedule
+8	N	565	copy_process
+8	J	566	copy_process
+4	W	566	sleep_on
+8	R	566	schedule
+4	J	568	wake_up
+8	E	569	do_exit
+4	R	569	schedule
+4	W	569	interruptible_sleep_on
+0	R	569	schedule
+4	J	583	wake_up
+4	R	583	schedule
+4	W	583	interruptible_sleep_on
+0	R	583	schedule
+4	J	715	wake_up
+4	R	715	schedule
+4	W	716	interruptible_sleep_on
+0	R	716	schedule
+4	J	739	wake_up
+4	R	739	schedule
+4	W	739	interruptible_sleep_on
+0	R	739	schedule
+4	J	751	wake_up
+4	R	751	schedule
+4	W	751	interruptible_sleep_on
+0	R	751	schedule
+4	J	769	wake_up
+4	R	769	schedule
+4	W	769	interruptible_sleep_on
+0	R	769	schedule
+4	J	811	wake_up
+4	R	811	schedule
+4	W	812	interruptible_sleep_on
+0	R	812	schedule
+4	J	830	wake_up
+4	R	830	schedule
+4	W	830	interruptible_sleep_on
+0	R	830	schedule
+4	J	993	wake_up
+4	R	993	schedule
+4	W	993	interruptible_sleep_on
+0	R	993	schedule
+4	J	1024	wake_up
+4	R	1024	schedule
+4	W	1024	interruptible_sleep_on
+0	R	1024	schedule
+4	J	1155	wake_up
+4	R	1155	schedule
+9	N	1157	copy_process
+9	J	1157	copy_process
+4	J	1157	schedule
+9	R	1157	schedule

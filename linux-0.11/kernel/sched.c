@@ -115,8 +115,14 @@ void schedule(void)
 					(*p)->alarm = 0;
 				}
 			if (((*p)->signal & ~(_BLOCKABLE & (*p)->blocked)) &&
-			(*p)->state==TASK_INTERRUPTIBLE)
-				(*p)->state=TASK_RUNNING;
+			(*p)->state==TASK_INTERRUPTIBLE) {
+                (*p)->state=TASK_RUNNING;
+                #if SHOW_SRC_FUNC_ENABLE
+                fprintk(3, "%ld\t%c\t%ld\t%s\n", (*p)->pid, 'J', jiffies, "schedule_signal");
+                #else
+                fprintk(3, "%ld\t%c\t%ld\n", (*p)->pid, 'J', jiffies);
+                #endif
+            }				
 		}
 
 /* this is the scheduler proper: */
@@ -138,12 +144,33 @@ void schedule(void)
 				(*p)->counter = ((*p)->counter >> 1) +
 						(*p)->priority;
 	}
+    if (task[next]->pid != current->pid) {
+        if (current->state == TASK_RUNNING) {
+            #if SHOW_SRC_FUNC_ENABLE
+            fprintk(3, "%ld\t%c\t%ld\t%s\n", current->pid, 'J', jiffies, __func__);
+            #else
+            fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'J', jiffies);
+            #endif
+        }
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", task[next]->pid, 'R', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", task[next]->pid, 'R', jiffies);
+        #endif
+    }
 	switch_to(next);
 }
 
 int sys_pause(void)
 {
 	current->state = TASK_INTERRUPTIBLE;
+    if (current->pid != 0) {
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", current->pid, 'W', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'W', jiffies);
+        #endif
+    }
 	schedule();
 	return 0;
 }
@@ -159,9 +186,21 @@ void sleep_on(struct task_struct **p)
 	tmp = *p;
 	*p = current;
 	current->state = TASK_UNINTERRUPTIBLE;
+    #if SHOW_SRC_FUNC_ENABLE
+    fprintk(3, "%ld\t%c\t%ld\t%s\n", current->pid, 'W', jiffies, __func__);
+    #else
+    fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'W', jiffies);
+    #endif
 	schedule();
-	if (tmp)
-		tmp->state=0;
+	if (tmp) {
+        tmp->state=TASK_RUNNING;
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", tmp->pid, 'J', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", tmp->pid, 'J', jiffies);
+        #endif
+    }
+		
 }
 
 void interruptible_sleep_on(struct task_struct **p)
@@ -175,20 +214,41 @@ void interruptible_sleep_on(struct task_struct **p)
 	tmp=*p;
 	*p=current;
 repeat:	current->state = TASK_INTERRUPTIBLE;
+    #if SHOW_SRC_FUNC_ENABLE
+    fprintk(3, "%ld\t%c\t%ld\t%s\n", current->pid, 'W', jiffies, __func__);
+    #else
+    fprintk(3, "%ld\t%c\t%ld\n", current->pid, 'W', jiffies);
+    #endif
 	schedule();
 	if (*p && *p != current) {
-		(**p).state=0;
+		(**p).state=TASK_RUNNING;
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", (**p).pid, 'J', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", (**p).pid, 'J', jiffies);
+        #endif
 		goto repeat;
 	}
 	*p=NULL;
-	if (tmp)
-		tmp->state=0;
+	if (tmp) {
+        tmp->state=TASK_RUNNING;
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", tmp->pid, 'J', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", tmp->pid, 'J', jiffies);
+        #endif
+    }
 }
 
 void wake_up(struct task_struct **p)
 {
 	if (p && *p) {
-		(**p).state=0;
+		(**p).state=TASK_RUNNING;
+        #if SHOW_SRC_FUNC_ENABLE
+        fprintk(3, "%ld\t%c\t%ld\t%s\n", (**p).pid, 'J', jiffies, __func__);
+        #else
+        fprintk(3, "%ld\t%c\t%ld\n", (**p).pid, 'J', jiffies);
+        #endif
 		*p=NULL;
 	}
 }
