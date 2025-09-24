@@ -189,14 +189,14 @@ void init(void)
 		close(0);
 		if (open("/etc/rc",O_RDONLY,0))
 			_exit(1);
-		execve("/bin/sh",argv_rc,envp_rc);
+		execve("/bin/sh",argv_rc,envp_rc); // 以/etc/rc为标准输入的shell
 		_exit(2);
 	}
 	if (pid>0) // P1继续
-		while (pid != wait(&i))
+		while (pid != wait(&i))  // 等待P2退出
 			/* nothing */;
 	while (1) {
-		if ((pid=fork())<0) {
+		if ((pid=fork())<0) { // fork出P4,以/dev/tty0为标准输入的shell
 			printf("Fork failed in init\r\n");
 			continue;
 		}

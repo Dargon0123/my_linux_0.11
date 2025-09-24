@@ -2,7 +2,7 @@
 #define _SCHED_H
 
 #define NR_TASKS 64
-#define HZ 100
+#define HZ 100 // 10ms的时间片轮询
 
 #define FIRST_TASK task[0]
 #define LAST_TASK task[NR_TASKS-1]
@@ -16,7 +16,7 @@
 #error "Currently the close-on-exec-flags are in one word, max 32 files/proc"
 #endif
 
-#define SHOW_SRC_FUNC_ENABLE 1
+#define SHOW_SRC_FUNC_ENABLE 0
 
 #define TASK_RUNNING		0
 #define TASK_INTERRUPTIBLE	1
