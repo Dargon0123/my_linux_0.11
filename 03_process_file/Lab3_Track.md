@@ -91,7 +91,11 @@
 
 在0.11系统退出之前，需要执行sync，确保所有的缓存数据都存盘了，在关闭0.11系统。
 
-![image-20250924175803968](C:\Users\dar\AppData\Roaming\Typora\typora-user-images\image-20250924175803968.png)
+<p align="center">
+  <img src="https://github.com/Dargon0123/my_linux_0.11/blob/3_trace_task/03_process_file/L3_Graph/%E6%96%87%E4%BB%B6%E4%BA%A4%E6%8D%A2.png?raw=true" alt="可爱的猫咪" />
+  <br>
+  <strong>图1-1</strong>
+</p>
 
 接着，0.11系统退出之后，同样按照下面的操作，执行hdc的挂载，然后取出自己需要的文件。
 
