@@ -18,6 +18,7 @@
 #include <asm/system.h>
 
 extern void write_verify(unsigned long address);
+extern void first_return_from_kernel(void);
 
 long last_pid=0;
 
@@ -74,6 +75,7 @@ int copy_process(int nr,long ebp,long edi,long esi,long gs,long none,
 	struct task_struct *p;
 	int i;
 	struct file *f;
+    long *kernelstack = NULL;
 
 	p = (struct task_struct *) get_free_page();
 	if (!p)
@@ -95,6 +97,32 @@ int copy_process(int nr,long ebp,long edi,long esi,long gs,long none,
     #else
 	fprintk(3, "%ld\t%c\t%ld\n", last_pid, 'N', jiffies);
     #endif
+    /* init kernel stack start */
+    kernelstack = (long *) (PAGE_SIZE + (long) p);
+    *(--kernelstack) = ss & 0xffff; // for interrupt
+	*(--kernelstack) = esp;
+	*(--kernelstack) = eflags;
+	*(--kernelstack) = cs & 0xffff;
+	*(--kernelstack) = eip;
+
+    *(--kernelstack) = ds & 0xffff; // 这里的顺序只要保持和
+    // first_return_from_kernel 使用时候的顺序一直即可
+	*(--kernelstack) = es & 0xffff;
+	*(--kernelstack) = fs & 0xffff;
+	*(--kernelstack) = gs & 0xffff;
+	*(--kernelstack) = esi;
+	*(--kernelstack) = edi;
+	*(--kernelstack) = edx;
+	/* system_call -> reschedule -> schedule -> swtich_to 过程的入栈参数 */  
+
+    *(--kernelstack) = (long)first_return_from_kernel;
+	*(--kernelstack) = ebp;
+	*(--kernelstack) = ecx;
+	*(--kernelstack) = ebx;
+	*(--kernelstack) = 0;	/* eax */
+	p->kernelstack = (long)kernelstack;
+    /* init kernel stack end */
+
 	p->tss.back_link = 0;
 	p->tss.esp0 = PAGE_SIZE + (long) p;
 	p->tss.ss0 = 0x10;
