@@ -13,12 +13,12 @@ Debug and learning linux-0.11. Talk is cheap, show me your code.
 * https://github.com/yuan-xy/Linux-0.11
 * https://github.com/Wangzhike/HIT-Linux-0.11/tree/master?tab=readme-ov-file
 
-
-
 # 阅读顺序
 
 * [L1_OS_Booting：系统启动引导](https://github.com/Dargon0123/Linux-0.11/blob/Lab1_OS_Boot/Lab1_OS_Booting.md)
 * [L2_Sys_call：系统调用链路分析](https://github.com/Dargon0123/Linux-0.11/blob/Lab2_Sys_Call/README.md)
 * [L3_Process_track：一个进程创建的细节](https://github.com/Dargon0123/my_linux_0.11/blob/3_trace_task/03_process_file/Lab3_Track.md)
+* [L3_Process_track：进程跟踪实验细节](https://github.com/Dargon0123/my_linux_0.11/tree/3_trace_task)
+* [L4_Process_switch_with_kernel_stack：内核栈切换细节](https://github.com/Dargon0123/my_linux_0.11/tree/3_trace_task)
 * 梳理ing……
 
