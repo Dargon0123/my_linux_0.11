@@ -1,6 +1,10 @@
 [toc]
 
-
+<div align="right">
+  <a href="README_EN.md">
+    <img src="https://img.shields.io/badge/English-Readme-blue?style=flat-square" alt="English README" />
+  </a>
+</div>
 
 # 0. 问题
 
@@ -106,7 +110,7 @@ struct task_struct * task[NR_TASKS] = {&(init_task.task), };
 通过上面的代码，整理出下面给出对应的上述`init_task`的关键寄存器信息。
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\Lab3_poroc-init_task.png" alt="可爱的猫咪" />
+  <img src="assets/images/Lab3_poroc-init_task.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-1</strong>
 </p>
@@ -118,7 +122,7 @@ struct task_struct * task[NR_TASKS] = {&(init_task.task), };
 下图对应的是`cs`这寄存器的段选择子描述符结构：
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\segment_selector.png" alt="可爱的猫咪" />
+  <img src="assets/images/segment_selector.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-2</strong>
 </p>
@@ -145,7 +149,7 @@ struct task_struct * task[NR_TASKS] = {&(init_task.task), };
 通过 `sched_init(); `初始化，进行加载`task0`的`0tss`和`0ldt`，`0ldt`里面含有task0的`{null，code，data}`三个段。将里面的代码段和数据段，分别对应到下面段描述符的`64bit`寄存器结构上。
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\segment_desc.png" alt="可爱的猫咪" />
+  <img src="assets/images/segment_desc.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-3</strong>
 </p>
@@ -239,7 +243,7 @@ GDT表里面的内容都是对应着各个任务段的地址，下面将两个�
 给出对应的GDT表的内容如下。   
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\Lab3_poroc-gdt.png" alt="可爱的猫咪" />
+  <img src="assets/images/Lab3_poroc-gdt.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-4</strong>
 </p>
@@ -300,7 +304,7 @@ __asm__ ("movl %%esp,%%eax\n\t" \
 寄存器`stack`里面的信息，在执行`ireq`之后，堆栈里面的内容，会相继弹出给到对应的寄存器。如下图：
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\Lab3_poroc-move_to_user_mode_stack.png" alt="可爱的猫咪" />
+  <img src="assets/images/Lab3_poroc-move_to_user_mode_stack.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-5</strong>
 </p>
@@ -518,7 +522,7 @@ gs             0x17                23
 更新之后的栈里面的信息如下图。
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\Lab3_poroc-L3_05_fork_stack.png" alt="可爱的猫咪" />
+  <img src="assets/images/Lab3_poroc-L3_05_fork_stack.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-6</strong>
 </p>
@@ -634,7 +638,7 @@ gs             0x17                23
 进入`copy_process`前，当前的内核堆栈图更新如下（注意进入之后，你去看栈里面的信息，也会多一个函数调用之前的eip的寄存器的值，这点在上面的🎉小彩蛋里面有所陈述）：
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\Lab3_poroc-l3_06_fork_stack_3.png" alt="可爱的猫咪" />
+  <img src="assets/images/Lab3_poroc-l3_06_fork_stack_3.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-7</strong>
 </p>
@@ -706,7 +710,7 @@ copy_page_tables(old_data_base,new_data_base,data_limit);
 假设现在正在运行进程 1，代码中给出一个虚拟地址 0x03，由于进程 1 的 LDT 中代码段基址是 64M，所以线性地址是 64M + 3，最终由进程 1 页表映射到物理地址也同样是 0x03 处。
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\PDE_struct.png" alt="可爱的猫咪" />
+  <img src="assets/images/PDE_struct.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-8 PDE</strong>
 </p>
@@ -715,7 +719,7 @@ copy_page_tables(old_data_base,new_data_base,data_limit);
 位描述
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\PDE_strcu_detail.png" alt="可爱的猫咪" />
+  <img src="assets/images/PDE_strcu_detail.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-9 PDE_datail</strong>
 </p>
@@ -772,7 +776,7 @@ gs             0x17                23
 将之前压入的eip弹出来，即是`eip = 0x000068e1`的，此时代码跳转到0x000068e1位置处继续执行。
 
 <p align="center">
-  <img src="F:\Codefield\Code_C\EverNote_typora\Linux0.11总结\L3_Graph\Lab3_poroc-L3_05_fork_stack.png" alt="可爱的猫咪" />
+  <img src="assets/images/Lab3_poroc-L3_05_fork_stack.png" alt="可爱的猫咪" />
   <br>
   <strong>图1-10</strong>
 </p>
